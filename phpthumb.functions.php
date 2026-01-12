@@ -807,7 +807,9 @@ class phpthumb_functions {
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, (bool) $followredirects);
 			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 			$rawData = curl_exec($ch);
-			curl_close($ch);
+			if (PHP_VERSION_ID < 80000) {
+				curl_close($ch);
+			}
 			if (strlen($rawData) > 0) {
 				$error .= 'CURL succeeded ('.strlen($rawData).' bytes); ';
 				return $rawData;
