@@ -22,7 +22,7 @@ die('For security reasons, this demo is disabled by default. Please comment out 
 This is a demo of how you can use <a href="http://phpthumb.sourceforge.net">phpThumb()</a> in an image gallery.<br>
 <hr>
 <?php
-$docroot = realpath((getenv('DOCUMENT_ROOT') && preg_match('#^'.preg_quote(realpath(getenv('DOCUMENT_ROOT'))).'#', realpath(__FILE__))) ? getenv('DOCUMENT_ROOT') : str_replace(dirname(@$_SERVER['PHP_SELF']), '', str_replace(DIRECTORY_SEPARATOR, '/',  __DIR__ )));
+$docroot = realpath((getenv('DOCUMENT_ROOT') && preg_match('#^'.preg_quote(realpath(getenv('DOCUMENT_ROOT')), '#').'#', realpath(__FILE__))) ? getenv('DOCUMENT_ROOT') : str_replace(dirname(@$_SERVER['PHP_SELF']), '', str_replace(DIRECTORY_SEPARATOR, '/',  __DIR__ )));
 $imgdir = '/images/';                        // webroot-relative path to main images directory (only this and subdirectories of this will be displayed)
 $thumb  = '/phpThumb.php';                   // webroot-relative path to "phpThumb.php"
 $config = '/phpThumb.config.php';            // webroot-relative path to "phpThumb.php"
@@ -55,7 +55,7 @@ if (!empty($_REQUEST['pic'])) {
 } else {
 
 	$currentdir = realpath($docroot.'/'.$imgdir.@$_REQUEST['dir']);
-	if (!preg_match('#^'.preg_quote($dirlimit).'#', $currentdir)) {
+	if (!preg_match('#^'.preg_quote($dirlimit, '#').'#', $currentdir)) {
 		echo 'Cannot browse to "'.htmlentities($currentdir).'"<br>';
 	} elseif ($dh = @opendir($currentdir)) {
 		$folders = array();
@@ -68,7 +68,7 @@ if (!empty($_REQUEST['pic'])) {
 			}
 		}
 		closedir($dh);
-		if (preg_match('#^'.preg_quote($dirlimit).'#', realpath($currentdir.'/..'))) {
+		if (preg_match('#^'.preg_quote($dirlimit, '#').'#', realpath($currentdir.'/..'))) {
 			echo '<a href="'.htmlentities($_SERVER['PHP_SELF'].'?dir='.urlencode($_REQUEST['dir'].'/..'), ENT_QUOTES).'">Parent directory</a><br>';
 		}
 		if (!empty($folders)) {

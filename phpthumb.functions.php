@@ -874,7 +874,7 @@ class phpthumb_functions {
 
 		$open_basedirs = explode($delimiter, $config_open_basedir);
 		foreach ($open_basedirs as $key => $open_basedir) {
-			if (preg_match('#^'.preg_quote($open_basedir).'#'.($case_insensitive_pathname ? 'i' : ''), $dirname) && (strlen($dirname) > strlen($open_basedir))) {
+			if (preg_match('#^'.preg_quote($open_basedir, '#').'#'.($case_insensitive_pathname ? 'i' : ''), $dirname) && (strlen($dirname) > strlen($open_basedir))) {
 				$startoffset = substr_count($open_basedir, DIRECTORY_SEPARATOR) + 1;
 				break;
 			}
@@ -948,7 +948,7 @@ class phpthumb_functions {
 
 
 	public static function SanitizeFilename($filename) {
-		$filename = preg_replace('/[^'.preg_quote(' !#$%^()+,-.;<>=@[]_{}').'a-zA-Z0-9]/', '_', $filename);
+		$filename = preg_replace('/[^'.preg_quote(' !#$%^()+,-.;<>=@[]_{}', '/').'a-zA-Z0-9]/', '_', $filename);
 		if (self::version_compare_replacement(PHP_VERSION, '4.1.0', '>=')) {
 			$filename = trim($filename, '.');
 		}
