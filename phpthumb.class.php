@@ -1929,6 +1929,11 @@ class phpthumb {
 							} else {
 								$this->DebugMessage('Skipping "+repage" because ImageMagick (v'.$this->ImageMagickVersion().') does not support it', __FILE__, __LINE__);
 							}
+							if ($getimagesize[2] == IMAGETYPE_AVIF) {
+								// fix for Firefox - some specially created AVIF sources render corrupted in FF 146
+								// e.g. img.php?src=/upload/b5b02e9b10a63182fd33966655afbe4e/xx-1768470045-rada-jpg-honzam-1195-grada.jpg&w=700&h=700&zc=1&f=avif
+								$commandline .= ' -define heic:chroma=420';
+							}
 
 						} elseif ($this->sw || $this->sh || $this->sx || $this->sy) {
 
