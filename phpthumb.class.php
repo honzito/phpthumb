@@ -1751,8 +1751,22 @@ class phpthumb {
 						$this->is_alpha = true;
 						break;
 					case 'avif':
-						$ImageCreateFunction = 'imagecreatefromavif';
-						$this->is_alpha = true;
+						// ImageMagick writes AVIF through libheif, and libheif < 1.12.0 omits the
+						// mandatory 'pixi' property. Firefox parses AVIF strictly and rejects such a
+						// file with "Image corrupt or truncated", while Chrome/Edge accept it. GD
+						// (libavif) always writes 'pixi', so hand the ImageMagick-resized image over
+						// to GD through a lossless PNG intermediate instead of using raw IM output.
+						if (function_exists('imagetypes') && (imagetypes() & IMG_AVIF)) {
+							$this->DebugMessage('Not using raw ImageMagick output for AVIF (libheif may omit the mandatory "pixi" property); re-encoding via GD', __FILE__, __LINE__);
+							$outputFormat = 'png';
+							$ImageCreateFunction = 'imagecreatefrompng';
+							$this->is_alpha = true;
+							$this->useRawIMoutput = false;
+						} else {
+							// GD cannot output AVIF - fall back to raw ImageMagick output
+							$ImageCreateFunction = 'imagecreatefromavif';
+							$this->is_alpha = true;
+						}
 						break;
 					default:
 						$this->DebugMessage('Forcing output to PNG because $this->thumbnailFormat ('.$this->thumbnailFormat.' is not a GD-supported format)', __FILE__, __LINE__);
